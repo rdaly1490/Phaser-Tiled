@@ -5,7 +5,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, 'mapPhaser', { preload: preloa
 function preload() {
 
 	//Load the tilemap file
-	game.load.tilemap('myGame', 'assets/test.json', null, Phaser.Tilemap.TILED_JSON);
+	game.load.tilemap('myGame', 'assets/test2.json', null, Phaser.Tilemap.TILED_JSON);
 
 	//Load the spritesheet for the tilemap
 	game.load.image('test', 'assets/grass-tiles-2-small.png');
@@ -15,7 +15,8 @@ function preload() {
 }
 
 var map;
-var layer;
+var groundLayer;
+var obstacleLayer;
 var player;
 
 function create() {    
@@ -29,12 +30,16 @@ function create() {
 	map.addTilesetImage('test');
 
 	//'Tile LAyer 1' is the name of a layer inside of Tiled Map Editor (check json file)
-	layer = map.createLayer('Tile Layer 1');
+	groundLayer = map.createLayer('Tile Layer 1');
+	obstacleLayer = map.createLayer('Obstacles');
 
 	//  Here, the range is from 1 (the first tile) to the fifth (last tile).
     // map.setCollisionBetween(1, 5);
+	map.setCollisionBetween(1, 200, true, 'Obstacles');
 
-	layer.resizeWorld();
+	groundLayer.resizeWorld();
+	obstacleLayer.resizeWorld();
+
 
 	//Add player
 	player = game.add.sprite(100, 100, 'player');
@@ -53,7 +58,8 @@ function create() {
 
 function update() {
 
-	game.physics.arcade.collide(player, layer);
+	game.physics.arcade.collide(player, groundLayer);
+	game.physics.arcade.collide(player, obstacleLayer);
 
 
 	player.body.velocity.x = 0;
@@ -83,7 +89,7 @@ function update() {
 
     	player.animations.stop();
         player.frame = 4;
-        
+
     }
 } 
 
